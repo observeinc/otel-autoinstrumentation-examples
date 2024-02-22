@@ -1,2 +1,5 @@
 public/.DS_Store
 .DS_Store
+node_modules
+observe-traces-values.yaml
+package-lock.json

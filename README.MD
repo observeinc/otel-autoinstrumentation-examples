@@ -54,12 +54,14 @@ helm repo update
 
 ```
 helm install --namespace=observe observe-traces observe/traces \
-	--set global.observe.collectionEndpoint="{https://{YOUR_OBSERVE_TENANT}.collect.observeinc.com/}" \
-	--set observe.token.value="{YOUR_INGEST_TOKEN}"
+	--set global.observe.collectionEndpoint="https://166467280995.collect.observeinc.com/" \
+	--set observe.token.value="ds17KnCz1rkt8Bwotiva:ojUrrmdh7yrDO-Yjx97J0rNEeIDNV85u"
 ```
 
 #### Step 4 - write out the configuration values to a yaml file locally
+```
 helm -n observe get values observe-traces -o yaml > observe-traces-values.yaml
+```
 
 ### Switch your default K8s namespace to be Observe
 

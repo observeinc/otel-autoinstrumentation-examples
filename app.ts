@@ -13,6 +13,9 @@ app.use(express.json());
 function getRandomNumber(min: number, max: number) {
   return Math.floor(Math.random() * (max - min) + min);
 }
+function getRandomInt(max: number) {
+  return Math.floor(Math.random() * max);
+}
 
 app.get('/rolldice', (req, res) => {
   res.send(getRandomNumber(1, 6).toString());
@@ -29,8 +32,8 @@ app.post('/postroll',(req,res)=>{
 
 app.get('/ohno', (req, res) => {
  //modify the url in any way you want
-  var newurl = 'http://google.com/';
-  request(newurl).pipe(res);
+  var urls = ['http://google.com/','http://datadicks.com','http://unknown.observeinc.com'];
+  request(urls[getRandomInt(urls.length)]).pipe(res);
 });
 
 
