@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+   name: dice
+   namespace: observe
+spec:
+   replicas: 1
+   selector:
+      matchLabels:
+         bb: web
+   template:
+      metadata:
+         labels:
+            bb: web
+      spec:
+         containers:
+            - name: dice-app-demo
+              image: dice
+              imagePullPolicy: Never
+              env:
+              - name: OTEL_TRACES_EXPORTER
+                value: otlp
+              - name: OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
+                value: "http://observe-traces.observe.svc.cluster.local:4318/v1/traces"
+              - name: OTEL_NODE_RESOURCE_DETECTORS
+                value: "env,host"
+              - name: OTEL_SERVICE_NAME
+                value: example-node
+              - name: NODE_OPTIONS
+                value: --require @opentelemetry/auto-instrumentations-node/register
+              
+---
+apiVersion: v1
+kind: Service
+metadata:
+   name: dice-entrypoint
+   namespace: observe
+spec:
+   type: NodePort
+   selector:
+      bb: web
+   ports:
+      - port: 8080
+        targetPort: 8080
+        nodePort: 30001
