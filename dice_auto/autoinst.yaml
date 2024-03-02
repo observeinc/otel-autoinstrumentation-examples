@@ -2,6 +2,7 @@ apiVersion: opentelemetry.io/v1alpha1
 kind: Instrumentation
 metadata:
   name: demo-instrumentation
+  namespace: observe
 spec:
   exporter:
     endpoint: http://observe-traces.observe.svc.cluster.local:4317/v1/traces

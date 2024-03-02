@@ -18,9 +18,9 @@ The below instructions are for a K8s deployment, and specifically K8s running on
 
 ### Build the container image for the app
 
-`docker build -t dice_auto .`
+`docker build -t dice-auto .`
 
-This should create a new container image called `dice_auto` that we will reference later for K8s deployment. Remember *DO NOT DEPLOY THIS TO K8S YET*!
+This should create a new container image called `dice-auto` that we will reference later for K8s deployment. Remember *DO NOT DEPLOY THIS TO K8S YET*!
 
 
 ### Set up the Observe collector and deploy it via Helm
@@ -60,6 +60,12 @@ helm -n observe get values observe-traces -o yaml > observe-traces-values.yaml
 
 ## OTEL K8s Operator with Auto-Instrumentation Steps
 
+### Step 0 - Set Namespace To Observe
+For this example we'll deploy everything into the namespace `observe`. You can use the below command or set the namespace in your yaml files.
+
+```
+kubectl config set-context --current --namespace=observe
+```
 
 ### Step 1 - Install Cert-manager
 
@@ -98,7 +104,11 @@ helm install --namespace observe --set admissionWebhooks.certManager.enabled=fal
 ### Step 3 - Deploy the OTEL Operator
 For node.js specifically, you can now use the operator, in conjunction with kubectl, to set up auto-instrumentation. Note that the collector endpoint is specific to Observe!
 
-Note you may get an error from the OTEL Operator webhook, just retry the command - but autoinst.yaml deploys the OTEL operator.
+Note you may get an error from the OTEL Operator webhook along the lines of:
+
+`Error from server (InternalError): error when creating "autoinst.yaml": Internal error occurred: failed calling webhook "minstrumentation.kb.io": failed to call webhook: Post "https://opentelemetry-operator-webhook.observe.svc:443/mutate-opentelemetry-io-v1alpha1-instrumentation?timeout=10s": dial tcp 10.111.30.182:443: connect: connection refused`
+
+Just retry the below command until it's successful.
 
 ```
 kubectl apply -f autoinst.yaml
@@ -110,13 +120,41 @@ kubectl apply -f autoinst.yaml
 Deploy our app version "as is", meaning without any of the OTEL libraries installed:
 
 ```
-kubectl config set-context --current --namespace=observe
 kubectl apply -f dice_auto.yaml
 ```
 
 
 
 
+
+## How does this work?
+
+While you do not need to install/configure the OTEL auto instrumentation libraries into your node app directly, the operator relies K8s "annotations" to know which language and what containers to auto instrument via the operator. Below is what was added to `dice_auto.yaml` to support this.
+
+```
+spec:
+   template:
+      metadata:
+         annotations:
+            instrumentation.opentelemetry.io/inject-nodejs: "true"
+            instrumentation.opentelemetry.io/container-names: "dice-auto"
+```
+
+Also unqiue to this deployment is the port configuration for our OTEL Collector. Reminder that we are using the Observe version of the Collector, and if you look at `autoinst.yaml` you will see the following:
+
+```
+      - name: OTEL_EXPORTER_OTLP_ENDPOINT
+        value: http://observe-traces.observe.svc.cluster.local:4317/v1/traces
+```
+
+By comparison, if you look at `dice.yaml` in the `dice_manual` directory, you'll see we need to set a number of environment variables in addition to also installing the OTEL libraries during the container build process. 
+
+Additionally, the OTEL exporter is listening on port `4318`
+
+```
+- name: OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
+  value: "http://observe-traces.observe.svc.cluster.local:4318/v1/traces"
+```
 
 
 

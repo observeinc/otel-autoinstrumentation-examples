@@ -9,5 +9,5 @@ services:
       OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: https://166467280995.collect.observeinc.com/v1/otel/v1/traces
       OTEL_EXPORTER_OTLP_HEADERS: Authorization=Bearer ds17KnCz1rkt8Bwotiva:ojUrrmdh7yrDO-Yjx97J0rNEeIDNV85u
       OTEL_NODE_RESOURCE_DETECTORS: env,host
-      OTEL_SERVICE_NAME: example-node
+      OTEL_SERVICE_NAME: example-node-manual-docker
       NODE_OPTIONS: --require @opentelemetry/auto-instrumentations-node/register

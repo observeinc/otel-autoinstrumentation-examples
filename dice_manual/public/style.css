@@ -63,6 +63,9 @@ button {
   touch-action: manipulation;
   vertical-align: middle;
   white-space: nowrap;
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
 }
 
 .button-3:focus:not(:focus-visible):not(.focus-visible) {
