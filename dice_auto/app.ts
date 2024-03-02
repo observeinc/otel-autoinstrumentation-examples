@@ -33,7 +33,9 @@ app.post('/postroll',(req,res)=>{
 app.get('/ohno', (req, res) => {
  //modify the url in any way you want
   var urls = ['http://google.com/','http://datadicks.com','http://unknown.observeinc.com'];
+  //var urls = ['http://datadicks.com']
   request(urls[getRandomInt(urls.length)]).pipe(res);
+
 });
 
 

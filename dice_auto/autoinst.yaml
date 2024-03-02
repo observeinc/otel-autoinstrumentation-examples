@@ -1,0 +1,25 @@
+apiVersion: opentelemetry.io/v1alpha1
+kind: Instrumentation
+metadata:
+  name: demo-instrumentation
+spec:
+  exporter:
+    endpoint: http://observe-traces.observe.svc.cluster.local:4317/v1/traces
+  propagators:
+    - tracecontext
+    - baggage
+    - b3
+  sampler:
+    type: always_on
+    argument: "1"
+  nodejs:
+    env:
+      - name: OTEL_EXPORTER_OTLP_ENDPOINT
+        value: http://observe-traces.observe.svc.cluster.local:4317/v1/traces
+      - name: OTEL_TRACES_EXPORTER
+        value: otlp
+      - name: OTEL_NODE_RESOURCE_DETECTORS
+        value: "env,host"
+      - name: OTEL_SERVICE_NAME
+        value: otel-operator-node
+
