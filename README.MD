@@ -1,6 +1,6 @@
 # Intro
 
-This is a sample Node app for Observe that is a simple example of deploying an OTEL auto-instrumented Node JS app that is configured to ship traces to Observe. There are four permutations to be aware of:
+This repo contains a few examples of deploying an OTEL auto-instrumented Node JS app that is configured to ship traces to Observe. There are four permutations to be aware of:
 
 # dice_manual directory
 
