@@ -1,6 +1,6 @@
 # Intro
 
-This repo contains a few examples of deploying an OTEL auto-instrumented Node JS app that is configured to ship traces to Observe. There are four permutations to be aware of:
+This repo contains a few examples of deploying an OTEL auto-instrumented Node JS app that is configured to ship traces to Observe. There are four permutations to be aware of. The first three are in the `dice_manual` directory of this repo, and the fourth is in the `dice_auto` directory:
 
 # dice_manual directory
 
@@ -23,26 +23,26 @@ For option 4, the application is reachable via `https://localhost:30001`.
 
 ## Caveats
 
-Ingest tokens should be treated as "secrets" in production. For this example, we're storing them an environment variables, which is fine for localized testing, but please follow security best practices when attempting this in a real environment. 
+Ingest tokens should be treated as "secrets" in production. For this example, we're storing them in environment variables, which is fine for localized testing, but please follow security best practices when attempting this in a real environment. 
 
-This was all tested on an M1 Mac locally, and is not intended to be pushed into production as is.
+This was all built & tested on an M1 Mac, and is not intended to be pushed into production as is.
 
 
 ## K8s Setup
 
-The below instructions are for a K8s deployment, and specifically K8s running on Docker desktop.
+All Kubernetes related commands were tested via K8s running on Docker desktop.
 
 
 ### Build the container image for the app
 
 `docker build -t dice .`
 
-This should create a new container image called `dice` that we will reference later for K8s deployment.
+This should create a new container image called `dice` that we will reference later for the K8s deployment that does not use the OTEL operator.
 
 
 ### Set up the Observe collector and deploy it via Helm
 
-These steps are cribbed from the existing OTEL App instructions on your Observe tenant. For step 3, update the values to match your environment, specifically for:
+These steps are the same as those bundled with the Observe OTEL App instructions available in your Observe tenant. For step 3, update the values to match your environment, specifically for:
 `global.observe.collectionEndpoint` and
 `observe.token.value`
 
@@ -62,22 +62,22 @@ helm repo update
 
 #### Step 3 - install the helm chart from the Observe repo
 
+Update the token value and url value to be appropriate for your tenant!
+
 ```
 helm install --namespace=observe observe-traces observe/traces \
-	--set global.observe.collectionEndpoint="https://166467280995.collect.observeinc.com/" \
-	--set observe.token.value="ds17KnCz1rkt8Bwotiva:ojUrrmdh7yrDO-Yjx97J0rNEeIDNV85u"
+	--set global.observe.collectionEndpoint="https://${OBSERVE_TENANT}.collect.observeinc.com/" \
+	--set observe.token.value="${OBSERVE_INGEST_TOKEN}"
 ```
 
-#### Step 4 - write out the configuration values to a yaml file locally
-```
-helm -n observe get values observe-traces -o yaml > observe-traces-values.yaml
-```
+
 
 ### Switch your default K8s namespace to be Observe
 
 `kubectl config set-context --current --namespace=observe`
 
 ### Apply our k8s yaml for dice
+
 `kubectl apply -f dice.yaml`
 
 
@@ -91,7 +91,7 @@ Follow the previous steps for deploying the Observe collector in
 
 ## Step 0
 
-Cert-manager install steps
+Cert-manager install steps - you probably need cert manager to handle TLS certificate deployment and management, so you don't get TLS or SSL related errors.
 
 ```
 helm repo add jetstack https://charts.jetstack.io --force-update
