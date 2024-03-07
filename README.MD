@@ -34,15 +34,15 @@ All Kubernetes related commands were tested via K8s running on Docker desktop.
 
 
 ### Build the container image for the app
+There are container image build instructions in each directory (`dice_auto` and `dice_manual`) - follow the specific README.MD files in each subdirectory.
 
-`docker build -t dice .`
-
-This should create a new container image called `dice` that we will reference later for the K8s deployment that does not use the OTEL operator.
+For the manual instrumentation case, you will create an image called `dice` that we will reference later for the K8s deployment that does not use the OTEL operator. The `dice-auto` image will be used by the OTEL operator, and does not build an image that includes the OTEL auto instrumentation libraries.
 
 
 ### Set up the Observe collector and deploy it via Helm
 
 These steps are the same as those bundled with the Observe OTEL App instructions available in your Observe tenant. For step 3, update the values to match your environment, specifically for:
+
 `global.observe.collectionEndpoint` and
 `observe.token.value`
 
@@ -83,6 +83,9 @@ helm install --namespace=observe observe-traces observe/traces \
 
 
 # Experimental - OTEL K8s Operator with Auto-Instrumentation
+**Order matters!**
+
+The Instrumentation resource needs to be deployed before before deploying the application, otherwise the auto-instrumentation won’t work.
 
 ## Step -1 
 Follow the previous steps for deploying the Observe collector in
@@ -170,36 +173,3 @@ Additional Items that may be optional?
 ```
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-## Order matters! 
-
-The Instrumentation resource needs to be deployed before before deploying the application, otherwise the auto-instrumentation won’t work.
-
-
-For auto-injection, see the `Then add an annotation to a pod to enable injection. ` section here:
-https://github.com/open-telemetry/opentelemetry-operator#deployment-modes
-
-and here:
-https://opentelemetry.io/docs/kubernetes/operator/automatic/#add-annotations-to-existing-deployments
-
-
-kubectl annotate pod dice-68b8d6cff7-7cdqs instrumentation.opentelemetry.io/inject-nodejs="true"
-
-
-kubectl get pods --all -o jsonpath='{.metadata.annotations}'
-
-
-kubectl logs -l app.kubernetes.io/name=opentelemetry-operator --container manager -n observe --follow

@@ -47,8 +47,8 @@ helm repo update
 
 ```
 helm install --namespace=observe observe-traces observe/traces \
-	--set global.observe.collectionEndpoint="https://166467280995.collect.observeinc.com/" \
-	--set observe.token.value="ds17KnCz1rkt8Bwotiva:ojUrrmdh7yrDO-Yjx97J0rNEeIDNV85u"
+	--set global.observe.collectionEndpoint="https://${OBSERVE_TENANT}.collect.observeinc.com/" \
+	--set observe.token.value="${OBSERVE_INGEST_TOKEN}"
 ```
 
 #### Step 4 - write out the configuration values to a yaml file locally
@@ -125,8 +125,6 @@ kubectl apply -f dice_auto.yaml
 
 
 
-
-
 ## How does this work?
 
 While you do not need to install/configure the OTEL auto instrumentation libraries into your node app directly, the operator relies K8s "annotations" to know which language and what containers to auto instrument via the operator. Below is what was added to `dice_auto.yaml` to support this.
@@ -149,11 +147,11 @@ Also unqiue to this deployment is the port configuration for our OTEL Collector.
 
 By comparison, if you look at `dice.yaml` in the `dice_manual` directory, you'll see we need to set a number of environment variables in addition to also installing the OTEL libraries during the container build process. 
 
-Additionally, the OTEL exporter is listening on port `4318`
+Additionally, the OTEL exporter is listening on port `4317` for operator auto-instrumented deployments like this one.
 
 ```
 - name: OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
-  value: "http://observe-traces.observe.svc.cluster.local:4318/v1/traces"
+  value: "http://observe-traces.observe.svc.cluster.local:4317/v1/traces"
 ```
 
 

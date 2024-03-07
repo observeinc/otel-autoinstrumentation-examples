@@ -56,8 +56,8 @@ Note: this is where your collector configuration goes, including your ingestion 
 
 ```
 helm install --namespace=observe observe-traces observe/traces \
-	--set global.observe.collectionEndpoint="https://166467280995.collect.observeinc.com/" \
-	--set observe.token.value="ds17KnCz1rkt8Bwotiva:ojUrrmdh7yrDO-Yjx97J0rNEeIDNV85u"
+	--set global.observe.collectionEndpoint="https://${OBSERVE_TENANT}.collect.observeinc.com/" \
+	--set observe.token.value="${OBSERVE_INGEST_TOKEN}"
 ```
 
 #### Step 4 - write out the configuration values to a yaml file locally
