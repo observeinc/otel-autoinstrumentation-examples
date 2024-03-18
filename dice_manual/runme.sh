@@ -1,9 +1,9 @@
 # Export variables for observe stuff
 # put your 12 digit tenant id here
-export TENANT_ID="166467280995"
+export TENANT_ID=""
 # put your Datastream TOKEN you created in your observe tenant here
 # be sure to create the token under the OTEL app namespace
-export DATASTREAM_TOKEN="ds17KnCz1rkt8Bwotiva:ojUrrmdh7yrDO-Yjx97J0rNEeIDNV85u"
+export DATASTREAM_TOKEN=""
 
 
 
