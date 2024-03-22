@@ -18,6 +18,7 @@ function getRandomInt(max: number) {
 }
 
 app.get('/rolldice', (req, res) => {
+  console.log("someone has rolled the dice");
   res.send(getRandomNumber(1, 6).toString());
 });
 
@@ -26,14 +27,17 @@ app.get('/', (req, res) => {
 });
 
 app.post('/postroll',(req,res)=>{
-  console.log(req.body);
+  console.log("Dice score submitted: " + req.body);
   res.send({"message":"score submitted successfully"});
 });
 
 app.get('/ohno', (req, res) => {
  //modify the url in any way you want
+
  var urls = ['http://google.com/','https://astronomy.sandbox.sockshop.biz/api/products','http://unknown.observeinc.com'];
-  request(urls[getRandomInt(urls.length)]).pipe(res);
+ const targ = urls[getRandomInt(urls.length)];
+ console.log("making an outbound request to: " + targ );
+ request(targ).pipe(res);
 
 });
 

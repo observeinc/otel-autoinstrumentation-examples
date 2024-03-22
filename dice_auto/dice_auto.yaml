@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-   name: dice-auto
+   name: observe-dice-auto
    namespace: observe
 spec:
    replicas: 1
@@ -14,11 +14,11 @@ spec:
             bb: web
          annotations:
             instrumentation.opentelemetry.io/inject-nodejs: "true"
-            instrumentation.opentelemetry.io/container-names: "dice-auto"
+            instrumentation.opentelemetry.io/container-names: "observe-dice-auto"
       spec:
          containers:
-            - name: dice-auto
-              image: dice-auto
+            - name: observe-dice-auto
+              image: observe-dice-auto
               imagePullPolicy: Never
 
 ---

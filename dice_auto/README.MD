@@ -18,7 +18,7 @@ The below instructions are for a K8s deployment, and specifically K8s running on
 
 ### Build the container image for the app
 
-`docker build -t dice-auto .`
+`docker build -t observe-dice-auto .`
 
 This should create a new container image called `dice-auto` that we will reference later for K8s deployment. Remember *DO NOT DEPLOY THIS TO K8S YET*!
 
