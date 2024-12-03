@@ -86,7 +86,7 @@ helm install \
 
 ### Step 2  - Install the OTEL Operator for K8s & Setup Admission Hooks
 
-Install the helm chart for the OTEL K8s operator, per [OTEL Operator Repo](https://github.com/open-telemetry/opentelemetry-helm-charts/tree/main/charts/opentelemetry-operator#opentelemetry-operator-helm-chart)
+Install the helm chart for the OTEL K8s operator, per [OTEL Operator Repo](https://github.com/open-telemetry/opentelemetry-helm-charts/tree/main/charts/opentelemetry-operator#opentelemetry-operator-helm-chart). Note that the instructions have changed recently (2024.12.03), due to some nice enhancements to the OTEL helm charts.
 
 
 ```
@@ -96,8 +96,11 @@ helm repo update
 
 
 ```
-helm install --namespace observe --set admissionWebhooks.certManager.enabled=false --set admissionWebhooks.certManager.autoGenerateCert=true \
-  opentelemetry-operator open-telemetry/opentelemetry-operator
+helm install opentelemetry-operator open-telemetry/opentelemetry-operator \
+--namespace observe \
+--set manager.collectorImage.repository=otel/opentelemetry-collector-k8s \
+--set admissionWebhooks.certManager.enabled=false \
+--set admissionWebhooks.autoGenerateCert.enabled=true
 ```
 
 
