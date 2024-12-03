@@ -96,8 +96,11 @@ helm repo update
 
 
 ```
-helm install --namespace observe --set admissionWebhooks.certManager.enabled=false --set admissionWebhooks.certManager.autoGenerateCert=true \
-  opentelemetry-operator open-telemetry/opentelemetry-operator
+helm install opentelemetry-operator open-telemetry/opentelemetry-operator \
+--namespace observe \
+--set manager.collectorImage.repository=otel/opentelemetry-collector-k8s \
+--set admissionWebhooks.certManager.enabled=false \
+--set admissionWebhooks.autoGenerateCert.enabled=true
 ```
 
 
