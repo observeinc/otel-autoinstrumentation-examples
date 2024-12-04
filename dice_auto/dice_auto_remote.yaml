@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+   name: observe-dice-auto
+   namespace: observe
+spec:
+   replicas: 1
+   selector:
+      matchLabels:
+         bb: web
+   template:
+      metadata:
+         labels:
+            bb: web
+         annotations:
+            instrumentation.opentelemetry.io/inject-nodejs: "true"
+            instrumentation.opentelemetry.io/container-names: "observe-dice-auto"
+      spec:
+         containers:
+            - name: observe-dice-auto
+              image: observechamp/observe_auto_instrumentation:verson0.2
+              imagePullPolicy: IfNotPresent
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+   name: dice-entrypoint
+   namespace: observe
+spec:
+   type: NodePort
+   selector:
+      bb: web
+   ports:
+      - port: 8080
+        targetPort: 8080
+        nodePort: 30001
